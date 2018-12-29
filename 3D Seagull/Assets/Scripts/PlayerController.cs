@@ -6,8 +6,12 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-	public int thrust = 20; // Upwards Force.
-	public int moveForward;	// Forward Speed.
+
+	//public TileManager _TileManagerScript;
+	public GroundSegSpawnManager spawnManagerScript;
+
+	public int thrustUp = 20; // Upwards Force.
+	public int forwardSpeed = 5;	// Forward Speed.
 	public Rigidbody rb;	// Players Rigidbody
 
 	public bool gameStarted = false;
@@ -39,17 +43,17 @@ public class PlayerController : MonoBehaviour
 			if (Input.GetMouseButtonDown(0))	// If the game has not started and the Mouse Button is pressed.
 			{
 				gameStarted = true;				// Start the game.					
-				Debug.Log("Game Has Started.");
+				//Debug.Log("Game Has Started.");
 			}
 		}
 
 		// The Game has started and its not GameOver.
 		else if (gameStarted == true && gameEnded == false)
 		{
-			if (Input.GetMouseButton(0))								// If the game has started and the mouse button is pressed.
+			if (Input.GetMouseButton(0))										// If the game has started and the mouse button is pressed.
 			{
-				rb.constraints = RigidbodyConstraints.FreezeRotation;	// Freeze the rotation and UnFreeze the position.
-				rb.AddForce(transform.up * thrust);						// Apply the Upwards Force.
+				rb.constraints = RigidbodyConstraints.FreezeRotation;			// Freeze the rotation and UnFreeze the position.
+				transform.Translate(Vector3.up * Time.deltaTime * thrustUp);	// Apply the Upwards Force.
 			}
 		}
 	}
@@ -58,8 +62,9 @@ public class PlayerController : MonoBehaviour
 	{
 		if (gameStarted == true)
 		{
-			rb.AddForce(transform.forward * moveForward);
+			transform.Translate(Vector3.forward * Time.deltaTime * forwardSpeed);
 		}
+		
 	}
 
 	void GameOver()
@@ -99,6 +104,11 @@ public class PlayerController : MonoBehaviour
 			case "Ring":
 				// Write code to add points to the score. (Is this case needed here or in OnCollitionEnter????)
 				Debug.Log("You passed through the Ring.");
+				break;
+
+			case "SpawnTrigger":
+				spawnManagerScript.SpawnGroundSeg();    // Run the SpawnTile Function.
+				Debug.Log("You passed through SpawnTrigger.");
 				break;
 		}
 	}
